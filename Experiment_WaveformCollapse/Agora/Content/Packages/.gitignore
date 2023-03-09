@@ -1,0 +1,6 @@
+# Allows for specific folders to be ignored or allowed within this folder
+*
+!*/
+!.keep
+!.readme
+!.gitignore
