@@ -1,0 +1,7 @@
+*
+!*/
+!.gitattributes
+!.gitignore
+!Experiment_AITest/**
+!RawFiles/**
+!Packaged/**
