@@ -1,0 +1,54 @@
+Buildings:
+	FarmPlot: Can be worked 4 times per day.
+		If "harvestCount" > 0, work steps reduce that by 1 and add 1 food to the inventory of the worker.
+		else if "workCount" > 0, work steps reduce that by 1.
+		if workCount == 0, workCount = 4; harvestCount = 4;
+		
+		After x works completed, set x harvest steps.
+			Harvest steps add food to the inventory of the NPC that did the work.
+	
+	House: Can hold 8 food.
+		On worked, while containing food, sets the worker's hunger to 0, reduces food count by 1, and heals the worker by 1 hp.
+		On worked, while not containing food, reduces the worker's HP by 1.
+		
+	Spotlight:
+		On worked, with existing target: refreshes "lit" debuff.
+		On worked, without existing target: finds closest target and adds "lit" debuff.
+
+For the AI stuff:
+Attacks have a 50% chance of hitting, increased to 100% if a spotlight is focusing the target.
+
+Zombie:
+	Can hear/see. Moves to targets it can hear, attacks targets it can see.
+	
+	Priority:
+		Attacks nearest visible target
+		If no visible targets, moves to nearest valid sound
+		Otherwise move to nearest visible zombie.
+		
+Villager:
+	On assigned: selects an available house, an available farm, and an available spotlight.
+	Every 1 second, check for visible zombie. Run away from first detected visible zombie.
+	if day:
+		If inventory empty, move to nearest unworked farm and apply a work step.
+		If inventory full, move to "home" and deposit all.
+	if night:
+		On night start: return to "home" and consume 1 food and heal 1 point. If no food, take 1 damage instead.
+		If there is an unworked spotlight, assign to spotlight and move to.
+		If no unworked spotlight, remain idle at "home"
+	If spotlight:
+		If spotlight has no living valid target
+		
+Soldier:
+	On assigned: selects an available house, an available watchtower.
+	if day:
+		On day start: return "home" and consume 1 food and heal 1 point. If no food, take 1 damage instead.
+	if night:
+		Every 0.5s, Check for visible zombies.
+			Rank visible zombies by distance. Spotlit zombies count as being "closer"
+			
+Spotlight:
+	If no valid living target, request a work step.
+		On worked, select nearest valid living target.
+	If valid living target, request a work step every 0.25 second and remove focus.
+		On worked, update spotlight focus to target.
