@@ -6,12 +6,15 @@
 #include "UObject/NoExportTypes.h"
 #include "WorkerAITypes.generated.h"
 
-/**
- * 
- */
-UCLASS()
-class EXPERIMENT_AITEST_API UWorkerAITypes : public UObject
+UENUM(BlueprintType)
+enum class EWorkType : uint8
 {
-	GENERATED_BODY()
-	
+	W_Undefined		UMETA(DisplayName = "Undefined"),
+	W_Generic		UMETA(DisplayName = "Generic"),
+	W_Repair		UMETA(DisplayName = "Repair"),
+	W_Target		UMETA(DisplayName = "Targeting"),
+	W_Reload		UMETA(DisplayName = "Reload"),
+	W_Attack		UMETA(DisplayName = "Attack"),
+	W_Deposit		UMETA(DisplayName = "Deposit"),
+	W_Withdraw		UMETA(DisplayName = "Withdraw"),
 };
