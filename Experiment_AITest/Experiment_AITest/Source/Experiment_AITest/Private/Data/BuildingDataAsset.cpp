@@ -20,10 +20,16 @@ TArray<UItemData*> UBuildingDataAsset::DoProduction(AActor* ParentActor, EWorkTy
 	if (ProduceData.Num() > 0) {
 		for (auto ItemData : ProduceData) {
 			UItemData* Item = NewObject<UItemData>(ParentActor);
+			Item->SetupFromRaw(ItemData.Amount, ItemData.StaticData);
 			Produce.Add(Item);
 		}
 	}
 	return Produce;
+}
+
+TArray<TSubclassOf<UDataAsset>> UBuildingDataAsset::GetProduction(EWorkType WorkType) const
+{
+	return TArray<TSubclassOf<UDataAsset>>();
 }
 
 TMap<EWorkType, FWorkData> UBuildingDataAsset::GetWorkInfo() const { return WorkInfo; }

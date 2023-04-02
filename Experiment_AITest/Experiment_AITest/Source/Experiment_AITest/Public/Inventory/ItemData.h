@@ -32,6 +32,9 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void SetupFromAsset(const int32 NewAmount, TSubclassOf<UDataAsset> FromAsset);
+
+	UFUNCTION(BlueprintCallable)
+	void SetupFromRaw(const int32 NewAmount, TSubclassOf<UItemStaticDataAsset> NewStaticData);
 	
 	UFUNCTION(BlueprintCallable)
 	bool IsValidData() const;

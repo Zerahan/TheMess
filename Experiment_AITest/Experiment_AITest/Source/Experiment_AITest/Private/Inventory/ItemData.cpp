@@ -33,6 +33,12 @@ void UItemData::SetupFromAsset(const int32 NewAmount, TSubclassOf<UDataAsset> Fr
 	}
 }
 
+void UItemData::SetupFromRaw(const int32 NewAmount, TSubclassOf<UItemStaticDataAsset> NewStaticData)
+{
+	Amount = NewAmount;
+	StaticData = NewStaticData;
+}
+
 bool UItemData::IsValidData() const {
 	return IsValid(StaticData);
 }
@@ -107,6 +113,9 @@ uint8 UItemData::FillAmountFromData(UItemData* FromData, int32& Remaining){
 			Remaining = FromData->GetAmount();
 		}
 	}
+
+	if(GetAmount() == 0) ConditionalBeginDestroy();
+	if(FromData->GetAmount() == 0) FromData->ConditionalBeginDestroy();
 
 	return (uint8)(Remaining == 0);
 }

@@ -53,5 +53,8 @@ public:
 	TArray<UItemData*> DoProduction(AActor* ParentActor, EWorkType WorkType) const;
 
 	UFUNCTION(BlueprintCallable)
+	TArray<TSubclassOf<UDataAsset>> GetProduction(EWorkType WorkType) const;
+
+	UFUNCTION(BlueprintCallable)
 	TMap<EWorkType, FWorkData> GetWorkInfo() const;
 };

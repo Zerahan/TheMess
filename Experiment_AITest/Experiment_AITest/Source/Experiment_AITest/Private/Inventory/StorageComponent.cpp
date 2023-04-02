@@ -10,7 +10,7 @@ UStorageComponent::UStorageComponent()
 	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true;
 	MaxSlotCount = 8;
-	WhitelistAllowedTypes = true;
+	WhitelistAllowedTypes = false;
 	// ...
 }
 
@@ -19,7 +19,10 @@ UStorageComponent::UStorageComponent()
 void UStorageComponent::BeginPlay()
 {
 	Super::BeginPlay();
-	ItemSlotList.SetNumUninitialized(MaxSlotCount);
+	ItemSlotList.SetNum(MaxSlotCount);
+	for (int32 i = 0; i < MaxSlotCount; i++) {
+		ItemSlotList[i] = nullptr;
+	}
 	
 	// ...
 	
@@ -118,6 +121,13 @@ uint8 UStorageComponent::TransferItemToStorage_Implementation(UItemData* ItemDat
 			if (Remaining == 0) {
 				break;
 			}
+		}
+	}
+	for (int32 i = 0; i < ItemSlotList.Num(); i++) {
+		if (ItemSlotList[i]->GetAmount() == 0) {
+			UItemData* Data = ItemSlotList[i];
+			ClearSlot(i);
+			Data->ConditionalBeginDestroy();
 		}
 	}
 	return (uint8)(Remaining == 0);

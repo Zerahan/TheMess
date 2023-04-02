@@ -14,4 +14,7 @@ class EXPERIMENT_AITEST_API UBuildingFunctionLibrary : public UBlueprintFunction
 {
 	GENERATED_BODY()
 	
+public:
+	UFUNCTION(BlueprintCallable)
+	static int32 FindClosestActorInArray(TArray<AActor*> Actors, AActor* OriginActor);
 };

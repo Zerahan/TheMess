@@ -31,7 +31,7 @@ public:
 	* @return			How much of ItemType is required to do this work?
 	*/
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
-	int32 GetRequiredItem(const EWorkType WorkType, TSubclassOf<UItemData>& ItemType) const;
+	int32 GetRequiredItem(const AActor* Worker, const EWorkType WorkType, TSubclassOf<UItemData>& ItemType) const;
 
 	/*
 	* Can this worker do this type of work for the building?
