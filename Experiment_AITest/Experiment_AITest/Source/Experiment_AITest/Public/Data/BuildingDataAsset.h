@@ -5,7 +5,6 @@
 #include "CoreMinimal.h"
 #include "Engine/DataAsset.h"
 #include "Buildings/WorkerAITypes.h"
-#include "Inventory/ItemTypes.h"
 #include "BuildingDataAsset.generated.h"
 
 class UItemData;
@@ -21,9 +20,6 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	EWorkType WorkType;
-	
-	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	TArray<FItemData_Struct> Production;
 };
 
 /**
@@ -50,7 +46,7 @@ public:
 	bool IsValidWorkType(EWorkType WorkType) const;
 
 	UFUNCTION(BlueprintCallable)
-	TArray<UItemData*> DoProduction(AActor* ParentActor, EWorkType WorkType) const;
+	void DoProduction(AActor* ParentActor, EWorkType WorkType) const;
 
 	UFUNCTION(BlueprintCallable)
 	TArray<TSubclassOf<UDataAsset>> GetProduction(EWorkType WorkType) const;

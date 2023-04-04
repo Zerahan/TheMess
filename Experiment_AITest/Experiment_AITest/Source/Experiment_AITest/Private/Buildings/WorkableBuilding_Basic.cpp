@@ -3,7 +3,6 @@
 
 #include "Buildings/WorkableBuilding_Basic.h"
 #include "Data/BuildingDataAsset.h"
-#include "Inventory/ItemData.h"
 #include "Pawns/WorkerCharacter_Basic.h"
 
 void AWorkableBuilding_Basic::BeginPlay()
@@ -34,17 +33,17 @@ AWorkableBuilding_Basic::AWorkableBuilding_Basic()
     MaxAssignedWorkers = 1;
 }
 
-bool AWorkableBuilding_Basic::CanDoWork_Implementation(const AActor* Worker, const EWorkType WorkType, const UItemData* AvailableItem) const
+bool AWorkableBuilding_Basic::CanDoWork_Implementation(const AActor* Worker, const EWorkType WorkType) const
 {
     return CanWorkBuilding(WorkType);
 }
 
-bool AWorkableBuilding_Basic::DoWork_Implementation(const AActor* Worker, const EWorkType WorkType, const UItemData* AvailableItem)
+bool AWorkableBuilding_Basic::DoWork_Implementation(const AActor* Worker, const EWorkType WorkType)
 {
     return false;//WorkBuilding(Worker, WorkType, TArray<UItemData*>());
 }
 
-int32 AWorkableBuilding_Basic::GetRequiredItem_Implementation(const AActor* Worker, const EWorkType WorkType, TSubclassOf<UItemData>& ItemType) const
+int32 AWorkableBuilding_Basic::GetRequiredItem_Implementation(const AActor* Worker, const EWorkType WorkType) const
 {
     return 0;
 }
@@ -64,10 +63,10 @@ bool AWorkableBuilding_Basic::CanWorkBuilding(EWorkType WorkType) const {
     return *IsWorkTypeAvailable.Find(WorkType);
 }
 
-bool AWorkableBuilding_Basic::WorkBuilding_Implementation(AActor* WorkingActor, EWorkType WorkType, TArray<UItemData*>& ReturnedProduction)
+bool AWorkableBuilding_Basic::WorkBuilding_Implementation(AActor* WorkingActor, EWorkType WorkType)
 {
     if(!CanWorkBuilding(WorkType)) return false;
-    ReturnedProduction = GetStaticData()->DoProduction(WorkingActor, WorkType);
+    //GetStaticData()->DoProduction(WorkingActor, WorkType);
     //GEngine->AddOnScreenDebugMessage(-1, 10, FColor::Red, FString::Printf(TEXT("Production: %i"), ReturnedProduction.Num()));
     return true;
 }

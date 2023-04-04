@@ -31,7 +31,7 @@ public:
 	* @return			How much of ItemType is required to do this work?
 	*/
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
-	int32 GetRequiredItem(const AActor* Worker, const EWorkType WorkType, TSubclassOf<UItemData>& ItemType) const;
+	int32 GetRequiredItem(const AActor* Worker, const EWorkType WorkType) const;
 
 	/*
 	* Can this worker do this type of work for the building?
@@ -40,7 +40,7 @@ public:
 	* @return			Can this type of work be done?
 	*/
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
-	bool CanDoWork(const AActor* Worker, const EWorkType WorkType, const UItemData* AvailableItem = nullptr) const;
+	bool CanDoWork(const AActor* Worker, const EWorkType WorkType) const;
 	
 	/*
 	* Performs a type of work for the building. Ex: Till land, reload turret, etc
@@ -49,5 +49,5 @@ public:
 	* @return			Did the work successfully execute?
 	*/
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
-	bool DoWork(const AActor* Worker, const EWorkType WorkType, const UItemData* AvailableItem = nullptr);
+	bool DoWork(const AActor* Worker, const EWorkType WorkType);
 };

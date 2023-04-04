@@ -8,7 +8,7 @@
 #include "StorageInterface.generated.h"
 
 class UItemData;
-class UStorageComponent;
+class UActorComponent;
 
 // This class does not need to be modified.
 UINTERFACE(MinimalAPI)
@@ -26,8 +26,9 @@ class EXPERIMENT_AITEST_API IStorageInterface
 
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
+	/*
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
-	UStorageComponent* GetStorageComponent() const;
+	UActorComponent* GetStorageComponent() const;
 	
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
 	uint8 TransferItemToStorage(UItemData* ItemDataToAdd, int32& Remaining);
@@ -36,6 +37,6 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
 	uint8 AddItemToStorage(int32 Amount, TSubclassOf<UDataAsset> StaticData, int32& Remaining);
 	virtual uint8 AddItemToStorage_Implementation(int32 Amount, TSubclassOf<UDataAsset> StaticData, int32& Remaining);
-
+	//*/
 
 };

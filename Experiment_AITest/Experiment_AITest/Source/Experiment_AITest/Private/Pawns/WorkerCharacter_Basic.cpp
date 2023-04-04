@@ -4,12 +4,11 @@
 #include "Pawns/WorkerCharacter_Basic.h"
 #include "Kismet/GameplayStatics.h"
 #include "Buildings/WorkableBuilding_Basic.h"
-#include "Inventory/StorageComponent.h"
 
 AWorkerCharacter_Basic::AWorkerCharacter_Basic()
 	: Super()
 {
-	StorageComponent = CreateDefaultSubobject<UStorageComponent>(TEXT("StorageComponent"));
+	//StorageComponent = CreateDefaultSubobject<UStorageComponent>(TEXT("StorageComponent"));
 }
 
 bool AWorkerCharacter_Basic::SetupAssignments()
@@ -59,20 +58,4 @@ AWorkableBuilding_Basic* AWorkerCharacter_Basic::GetAssignedWorksite() const {
 
 AWorkableBuilding_Basic* AWorkerCharacter_Basic::GetAssignedHouse() const {
 	return AssignedHouse;
-}
-
-UStorageComponent* AWorkerCharacter_Basic::GetStorageComponent_Implementation() const {
-	return StorageComponent;
-}
-
-uint8 AWorkerCharacter_Basic::TransferItemToStorage_Implementation(UItemData* ItemDataToAdd, int32& Remaining)
-{
-	if (!IsValid(Execute_GetStorageComponent(this))) return (uint8)EError::INVALID;
-	return Execute_GetStorageComponent(this)->TransferItemToStorage(ItemDataToAdd, Remaining);
-}
-
-uint8 AWorkerCharacter_Basic::AddItemToStorage_Implementation(int32 Amount, TSubclassOf<UDataAsset> StaticData, int32& Remaining)
-{
-	if (!IsValid(Execute_GetStorageComponent(this))) return (uint8)EError::INVALID;
-	return Execute_GetStorageComponent(this)->AddItemToStorage(Amount, StaticData, Remaining);
 }

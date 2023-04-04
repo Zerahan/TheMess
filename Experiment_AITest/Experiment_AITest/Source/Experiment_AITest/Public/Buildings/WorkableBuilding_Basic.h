@@ -41,9 +41,9 @@ protected:
 public:
 	AWorkableBuilding_Basic();
 
-	virtual bool CanDoWork_Implementation(const AActor* Worker, const EWorkType WorkType, const UItemData* AvailableItem = nullptr) const;
-	virtual bool DoWork_Implementation(const AActor* Worker, const EWorkType WorkType, const UItemData* AvailableItem = nullptr);
-	virtual int32 GetRequiredItem_Implementation(const AActor* Worker, const EWorkType WorkType, TSubclassOf<UItemData>& ItemType) const;
+	virtual bool CanDoWork_Implementation(const AActor* Worker, const EWorkType WorkType) const;
+	virtual bool DoWork_Implementation(const AActor* Worker, const EWorkType WorkType);
+	virtual int32 GetRequiredItem_Implementation(const AActor* Worker, const EWorkType WorkType) const;
 	
 	UFUNCTION(BlueprintCallable)
 	UBuildingDataAsset* GetStaticData() const;
@@ -70,8 +70,8 @@ public:
 	*	@return						If the work could be done at this time.
 	*/
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
-	bool WorkBuilding(AActor* WorkingActor, EWorkType WorkType, TArray<UItemData*>& ReturnedProduction);
-	virtual bool WorkBuilding_Implementation(AActor* WorkingActor, EWorkType WorkType, TArray<UItemData*>& ReturnedProduction);
+	bool WorkBuilding(AActor* WorkingActor, EWorkType WorkType);
+	virtual bool WorkBuilding_Implementation(AActor* WorkingActor, EWorkType WorkType);
 
 	/*
 	*	Sets the availability of one of the work types
