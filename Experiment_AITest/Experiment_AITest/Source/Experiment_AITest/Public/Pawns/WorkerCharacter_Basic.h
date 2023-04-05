@@ -40,6 +40,15 @@ public:
 	bool SetupAssignments();
 
 	UFUNCTION(BlueprintCallable)
+	bool AssignWorksite(bool ForceNew = false);
+
+	UFUNCTION(BlueprintCallable)
+	bool AssignHouse(bool ForceNew = false);
+
+	UFUNCTION(BlueprintCallable)
+	bool GetIsIdle() const;
+
+	UFUNCTION(BlueprintCallable)
 	AWorkableBuilding_Basic* GetAssignedWorksite() const;
 
 	UFUNCTION(BlueprintCallable)

@@ -6,22 +6,15 @@
 #include "GameFramework/Actor.h"
 #include "Building_Basic.generated.h"
 
+class UUnitStatusComponent;
+
 UCLASS(Blueprintable, BlueprintType, Abstract)
 class EXPERIMENT_AITEST_API ABuilding_Basic : public AActor
 {
 	GENERATED_BODY()
 
-	UPROPERTY(BlueprintReadOnly, VisibleInstanceOnly, meta = (AllowPrivateAccess = "true"))
-	float HitPoints;
-	
-	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, meta=(AllowPrivateAccess="true"))
-	float HitPoints_Max;
-
-	UPROPERTY(BlueprintReadOnly, VisibleInstanceOnly, meta = (AllowPrivateAccess = "true"))
-	bool IsAlive;
-
-	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, meta = (AllowPrivateAccess = "true"))
-	bool IsInvulnerable;
+	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, meta = (AllowPrivateAccess = "true"))
+	UUnitStatusComponent* StatusComponent;
 	
 public:	
 	// Sets default values for this actor's properties
@@ -36,26 +29,15 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	UFUNCTION(BlueprintCallable)
-	float GetHitPoints() const;
-
-	UFUNCTION(BlueprintCallable)
-	float SetHitPoints(float Value, bool ApplyAsModifier = true);
-
-	UFUNCTION(BlueprintCallable)
-	float GetMaxHitPoints() const;
-
-	UFUNCTION(BlueprintCallable)
-	float SetMaxHitPoints(float Value, bool ApplyAsModifier = true);
-
-	UFUNCTION(BlueprintCallable)
-	bool GetIsAlive() const;
-
-	UFUNCTION(BlueprintCallable)
-	bool SetIsAlive(bool Value);
+	UUnitStatusComponent* GetStatusComponent() const;
 
 	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
 
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
-	void OnKilled();
-	virtual void OnKilled_Implementation();
+	void UpdateGraphics();
+	virtual void UpdateGraphics_Implementation(){}
+
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+	void OnHitPointsChanged(const float HitPoints);
+	virtual void OnHitPointsChanged_Implementation(const float HitPoints){}
 };

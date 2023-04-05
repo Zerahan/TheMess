@@ -6,10 +6,15 @@
 #include "GameFramework/Character.h"
 #include "AICharacter_Basic.generated.h"
 
+class UUnitStatusComponent;
+
 UCLASS(BlueprintType, Blueprintable, Abstract)
 class EXPERIMENT_AITEST_API AAICharacter_Basic : public ACharacter
 {
 	GENERATED_BODY()
+
+	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, meta = (AllowPrivateAccess = "true"))
+	UUnitStatusComponent* StatusComponent;
 
 public:
 	// Sets default values for this character's properties
@@ -23,4 +28,12 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	UFUNCTION(BlueprintCallable)
+	UUnitStatusComponent* GetStatusComponent() const;
+
+	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
+
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+	void UpdateGraphics();
+	virtual void UpdateGraphics_Implementation() {}
 };

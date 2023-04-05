@@ -24,14 +24,6 @@ class EXPERIMENT_AITEST_API IWorkableInterface
 
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
-	/*
-	* What is the item type and amount required for this type of work to be done?
-	* @param WorkType	The type of work being done
-	* @param ItemType	The class of item that type of work requires
-	* @return			How much of ItemType is required to do this work?
-	*/
-	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
-	int32 GetRequiredItem(const AActor* Worker, const EWorkType WorkType) const;
 
 	/*
 	* Can this worker do this type of work for the building?
@@ -40,7 +32,7 @@ public:
 	* @return			Can this type of work be done?
 	*/
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
-	bool CanDoWork(const AActor* Worker, const EWorkType WorkType) const;
+	bool CanDoWork(AActor* Worker, const EWorkType WorkType) const;
 	
 	/*
 	* Performs a type of work for the building. Ex: Till land, reload turret, etc
@@ -49,5 +41,13 @@ public:
 	* @return			Did the work successfully execute?
 	*/
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
-	bool DoWork(const AActor* Worker, const EWorkType WorkType);
+	bool DoWork(AActor* Worker, const EWorkType WorkType);
+
+	/*
+	* How much time in seconds does it take to perform this work?
+	* @param WorkType	The type of work being done
+	* @return			The amount of time in seconds to perform this work.
+	*/
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+	float GetWorkTime(const EWorkType WorkType) const;
 };

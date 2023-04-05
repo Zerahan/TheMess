@@ -41,9 +41,12 @@ protected:
 public:
 	AWorkableBuilding_Basic();
 
-	virtual bool CanDoWork_Implementation(const AActor* Worker, const EWorkType WorkType) const;
-	virtual bool DoWork_Implementation(const AActor* Worker, const EWorkType WorkType);
-	virtual int32 GetRequiredItem_Implementation(const AActor* Worker, const EWorkType WorkType) const;
+	virtual bool CanDoWork_Implementation(AActor* Worker, const EWorkType WorkType) const;
+	virtual bool DoWork_Implementation(AActor* Worker, const EWorkType WorkType);
+
+	virtual void OnHitPointsChanged_Implementation(const float HitPoints) override;
+	
+	virtual float GetWorkTime_Implementation(const EWorkType WorkType) const override;
 	
 	UFUNCTION(BlueprintCallable)
 	UBuildingDataAsset* GetStaticData() const;
@@ -53,25 +56,6 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	uint8 SetStateID(uint8 NewStateID);
-	
-	/*
-	*	Is this work type valid for this building, and is it currently available.
-	*	@param WorkType	The worktype enum we are checking.
-	*	@return			If this type of work can be performed on this building.
-	*/
-	UFUNCTION(BlueprintCallable)
-	bool CanWorkBuilding(EWorkType WorkType) const;
-
-	/*
-	*	Attempt to apply work to a building, and retrieve the item results of that work
-	*	@param WorkingActor			The actor performing the work
-	*	@param WorkType				The type of work the actor is attempting to perform
-	*	@param ReturnedProduction	The items generated from performing the work (if anything)
-	*	@return						If the work could be done at this time.
-	*/
-	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
-	bool WorkBuilding(AActor* WorkingActor, EWorkType WorkType);
-	virtual bool WorkBuilding_Implementation(AActor* WorkingActor, EWorkType WorkType);
 
 	/*
 	*	Sets the availability of one of the work types
@@ -87,7 +71,7 @@ public:
 	*	@return				Returns if the worker was able to be assigned to this building.
 	*/
 	UFUNCTION(BlueprintCallable)
-	bool AssignNewWorker(AWorkerCharacter_Basic* NewWorker);
+	bool AssignNewWorker(AWorkerCharacter_Basic* NewWorker, bool IgnoreOneUnitLimit = false);
 
 	UFUNCTION(BlueprintCallable)
 	bool UnassignWorker(AWorkerCharacter_Basic* Worker);

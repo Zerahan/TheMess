@@ -13,27 +13,57 @@ AWorkerCharacter_Basic::AWorkerCharacter_Basic()
 
 bool AWorkerCharacter_Basic::SetupAssignments()
 {
+	return AssignWorksite() && AssignHouse();
+}
+
+bool AWorkerCharacter_Basic::AssignWorksite(bool ForceNew)
+{
 	if (IsValid(AssignedWorksite)) {
+		if (!ForceNew) return true;
 		AssignedWorksite->UnassignWorker(this);
 		AssignedWorksite = nullptr;
 	}
-	if (IsValid(AssignedHouse)) {
-		AssignedHouse->UnassignWorker(this);
-		AssignedHouse = nullptr;
-	}
-	for ( TSubclassOf<AWorkableBuilding_Basic> WorksiteClass : ValidWorksiteClasses) {
+
+	TArray<AActor*> Worksites;
+	for (TSubclassOf<AWorkableBuilding_Basic> WorksiteClass : ValidWorksiteClasses) {
 		if (IsValid(AssignedWorksite)) break;
-		TArray<AActor*> Worksites;
-		UGameplayStatics::GetAllActorsOfClass(GetWorld(), WorksiteClass, Worksites);
+		TArray<AActor*> NewWorksites;
+		UGameplayStatics::GetAllActorsOfClass(GetWorld(), WorksiteClass, NewWorksites);
+		Worksites.Append(NewWorksites);
+	}
+
+	// Attempt to assign the worker while obaying the one-unit limit.
+	for (AActor* ActorSite : Worksites) {
+		AWorkableBuilding_Basic* Worksite = Cast<AWorkableBuilding_Basic>(ActorSite);
+		if (IsValid(Worksite)) {
+			if (Worksite->AssignNewWorker(this)) {
+				AssignedWorksite = Worksite;
+				break;
+			}
+		}
+	}
+
+	// Attempt again but ignore the one-unit limit this time.
+	if (!IsValid(AssignedWorksite)) {
 		for (AActor* ActorSite : Worksites) {
 			AWorkableBuilding_Basic* Worksite = Cast<AWorkableBuilding_Basic>(ActorSite);
 			if (IsValid(Worksite)) {
-				if (Worksite->AssignNewWorker(this)) {
+				if (Worksite->AssignNewWorker(this, true)) {
 					AssignedWorksite = Worksite;
 					break;
 				}
 			}
 		}
+	}
+	return IsValid(AssignedWorksite);
+}
+
+bool AWorkerCharacter_Basic::AssignHouse(bool ForceNew)
+{
+	if (IsValid(AssignedHouse)) {
+		if (!ForceNew) return true;
+		AssignedHouse->UnassignWorker(this);
+		AssignedHouse = nullptr;
 	}
 	for (TSubclassOf<AWorkableBuilding_Basic> HouseClass : ValidHouseClasses) {
 		if (IsValid(AssignedHouse)) break;
@@ -49,8 +79,10 @@ bool AWorkerCharacter_Basic::SetupAssignments()
 			}
 		}
 	}
-	return IsValid(AssignedWorksite) && IsValid(AssignedHouse);
+	return IsValid(AssignedHouse);
 }
+
+bool AWorkerCharacter_Basic::GetIsIdle() const { return !IsValid(AssignedHouse) || !IsValid(AssignedWorksite); }
 
 AWorkableBuilding_Basic* AWorkerCharacter_Basic::GetAssignedWorksite() const {
 	return AssignedWorksite;

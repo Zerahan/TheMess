@@ -4,6 +4,7 @@
 #include "Buildings/WorkableBuilding_Basic.h"
 #include "Data/BuildingDataAsset.h"
 #include "Pawns/WorkerCharacter_Basic.h"
+#include "Components/UnitStatusComponent.h"
 
 void AWorkableBuilding_Basic::BeginPlay()
 {
@@ -16,9 +17,7 @@ void AWorkableBuilding_Basic::BeginPlay()
         }
         AssignedWorkers.Empty();
         AssignedWorkers.SetNum(MaxAssignedWorkers);
-        for (int i = 0; i < MaxAssignedWorkers; i++) {
-            AssignedWorkers[i] = nullptr;
-        }
+
         FString Name = GetStaticData()->GetDisplayName().ToString();
         Name.RemoveSpacesInline();
         //Name.ToLowerInline();
@@ -33,20 +32,32 @@ AWorkableBuilding_Basic::AWorkableBuilding_Basic()
     MaxAssignedWorkers = 1;
 }
 
-bool AWorkableBuilding_Basic::CanDoWork_Implementation(const AActor* Worker, const EWorkType WorkType) const
+bool AWorkableBuilding_Basic::CanDoWork_Implementation(AActor* Worker, const EWorkType WorkType) const
 {
-    return CanWorkBuilding(WorkType);
+    if(!IsWorkTypeAvailable.Contains(WorkType)) return false;
+    return *IsWorkTypeAvailable.Find(WorkType);
 }
 
-bool AWorkableBuilding_Basic::DoWork_Implementation(const AActor* Worker, const EWorkType WorkType)
+bool AWorkableBuilding_Basic::DoWork_Implementation(AActor* Worker, const EWorkType WorkType)
 {
-    return false;//WorkBuilding(Worker, WorkType, TArray<UItemData*>());
+    if (WorkType == EWorkType::W_Repair) {
+        if (IsValid(GetStatusComponent())) {
+            float RepairAmount = -1 * GetStatusComponent()->GetMaxHitPoints() * 0.1f;
+            TakeDamage(RepairAmount, FDamageEvent(), Worker->GetInstigatorController(), Worker);
+            return true;
+        }
+    }
+    return false;
 }
 
-int32 AWorkableBuilding_Basic::GetRequiredItem_Implementation(const AActor* Worker, const EWorkType WorkType) const
+void AWorkableBuilding_Basic::OnHitPointsChanged_Implementation(const float HitPoints)
 {
-    return 0;
+    if (IsValid(GetStatusComponent())) {
+        UpdateWorkTypeAvailability(EWorkType::W_Repair, GetStatusComponent()->GetHitPoints() != GetStatusComponent()->GetMaxHitPoints());
+    }
 }
+
+float AWorkableBuilding_Basic::GetWorkTime_Implementation(const EWorkType WorkType) const { return 1.f; }
 
 UBuildingDataAsset* AWorkableBuilding_Basic::GetStaticData() const { return StaticData.GetDefaultObject(); }
 
@@ -57,27 +68,18 @@ uint8 AWorkableBuilding_Basic::SetStateID(uint8 NewStateID) {
     return StateID;
 }
 
-bool AWorkableBuilding_Basic::CanWorkBuilding(EWorkType WorkType) const {
-    if (!IsValid(GetStaticData())) return false;
-    if (!GetStaticData()->IsValidWorkType(WorkType)) return false;
-    return *IsWorkTypeAvailable.Find(WorkType);
-}
-
-bool AWorkableBuilding_Basic::WorkBuilding_Implementation(AActor* WorkingActor, EWorkType WorkType)
-{
-    if(!CanWorkBuilding(WorkType)) return false;
-    //GetStaticData()->DoProduction(WorkingActor, WorkType);
-    //GEngine->AddOnScreenDebugMessage(-1, 10, FColor::Red, FString::Printf(TEXT("Production: %i"), ReturnedProduction.Num()));
-    return true;
-}
-
 void AWorkableBuilding_Basic::UpdateWorkTypeAvailability(EWorkType WorkType, bool NewAvailability) {
     if(!IsWorkTypeAvailable.Contains(WorkType)) return;
     IsWorkTypeAvailable.Add(WorkType, NewAvailability);
 }
 
-bool AWorkableBuilding_Basic::AssignNewWorker(AWorkerCharacter_Basic* NewWorker) {
+bool AWorkableBuilding_Basic::AssignNewWorker(AWorkerCharacter_Basic* NewWorker, bool IgnoreOneUnitLimit) {
     if(!IsValid(NewWorker)) return false;
+    if (!IgnoreOneUnitLimit) {
+        for (int32 i = 0; i < AssignedWorkers.Num(); i++) {
+            if(IsValid(AssignedWorkers[i])) return false;
+        }
+    }
     for (int32 i = 0; i < AssignedWorkers.Num(); i++) {
         if (!IsValid(AssignedWorkers[i])) {
             AssignedWorkers[i] = NewWorker;
