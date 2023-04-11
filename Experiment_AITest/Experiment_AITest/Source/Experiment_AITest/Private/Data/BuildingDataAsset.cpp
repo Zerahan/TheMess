@@ -3,10 +3,17 @@
 
 #include "Data/BuildingDataAsset.h"
 
-UBuildingDataAsset::UBuildingDataAsset()
+FString UBuildingDataAsset::GetIdentifierString() const
 {
-	DisplayName = FText::FromString("Undefined");
+	return GetPrimaryAssetId().ToString();
 }
+
+FPrimaryAssetId UBuildingDataAsset::GetPrimaryAssetId() const
+{
+	return FPrimaryAssetId(ItemType, GetFName());
+}
+
+UTexture2D* UBuildingDataAsset::GetIcon() const { return Icon.Get(); }
 
 bool UBuildingDataAsset::IsValidWorkType(EWorkType WorkType) const {
 	return WorkInfo.Contains(WorkType);
@@ -32,5 +39,3 @@ TArray<TSubclassOf<UDataAsset>> UBuildingDataAsset::GetProduction(EWorkType Work
 {
 	return TArray<TSubclassOf<UDataAsset>>();
 }
-
-TMap<EWorkType, FWorkData> UBuildingDataAsset::GetWorkInfo() const { return WorkInfo; }

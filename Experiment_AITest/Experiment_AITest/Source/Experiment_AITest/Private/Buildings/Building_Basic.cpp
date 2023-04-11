@@ -3,6 +3,7 @@
 
 #include "Buildings/Building_Basic.h"
 #include "Components/UnitStatusComponent.h"
+#include "Components/HierarchicalInstancedStaticMeshComponent.h"
 
 // Sets default values
 ABuilding_Basic::ABuilding_Basic()
@@ -36,6 +37,18 @@ float ABuilding_Basic::TakeDamage(float DamageAmount, FDamageEvent const& Damage
 	}
 	else {
 		return Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
+	}
+}
+
+void ABuilding_Basic::BuildGhost_Implementation(TArray<UStaticMesh*>& Meshes, TArray<FTransform>& Transforms) const {
+	TInlineComponentArray<UStaticMeshComponent*> StaticMeshes;
+	GetComponents<UStaticMeshComponent>(StaticMeshes);
+
+	for (auto Component : StaticMeshes) {
+		if(Component->GetStaticMesh()){
+			Meshes.Add(Component->GetStaticMesh());
+			Transforms.Add(Component->GetRelativeTransform());
+		}
 	}
 }
 

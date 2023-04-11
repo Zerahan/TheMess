@@ -21,7 +21,7 @@ class EXPERIMENT_AITEST_API AWorkableBuilding_Basic : public ABuilding_Basic , p
 	GENERATED_BODY()
 
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, meta = (AllowPrivateAccess = "true"))
-	TSubclassOf<UBuildingDataAsset> StaticData;
+	UBuildingDataAsset* StaticData;
 	
 	UPROPERTY()
 	TMap<EWorkType, bool> IsWorkTypeAvailable;

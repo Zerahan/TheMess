@@ -25,23 +25,41 @@ public:
 /**
  * 
  */
-UCLASS(BlueprintType, Blueprintable, Abstract)
+UCLASS(BlueprintType, Blueprintable)
 class EXPERIMENT_AITEST_API UBuildingDataAsset : public UPrimaryDataAsset
 {
 	GENERATED_BODY()
-
-	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, BlueprintGetter = GetDisplayName, meta = (AllowPrivateAccess = "true"))
-	FText DisplayName;
-
-	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, meta = (AllowPrivateAccess = "true"))
-	TMap<EWorkType, FWorkData> WorkInfo;
-
+	
 public:
-	UBuildingDataAsset();
+	UBuildingDataAsset()
+		:DisplayName(FText::FromString("Undefined"))
+	{}
+
+	/** Type of this item, set in native parent class */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Item)
+	FPrimaryAssetType ItemType;
+
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
+	FText DisplayName;
 
 	UFUNCTION(BlueprintCallable)
 	FText GetDisplayName() const { return DisplayName; }
-	
+
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
+	TSoftObjectPtr<UTexture2D> Icon;
+
+	UFUNCTION(BlueprintCallable)
+	UTexture2D* GetIcon() const;
+
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
+	TMap<EWorkType, FWorkData> WorkInfo;
+
+	UFUNCTION(BlueprintCallable)
+	TMap<EWorkType, FWorkData> GetWorkInfo() const { return WorkInfo; }
+
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
+	TSubclassOf<class ABuilding_Basic> SpawnedBuildingClass;
+
 	UFUNCTION(BlueprintCallable)
 	bool IsValidWorkType(EWorkType WorkType) const;
 
@@ -51,6 +69,10 @@ public:
 	UFUNCTION(BlueprintCallable)
 	TArray<TSubclassOf<UDataAsset>> GetProduction(EWorkType WorkType) const;
 
+
+	
 	UFUNCTION(BlueprintCallable)
-	TMap<EWorkType, FWorkData> GetWorkInfo() const;
+	FString GetIdentifierString() const;
+
+	virtual FPrimaryAssetId GetPrimaryAssetId() const override;
 };

@@ -40,4 +40,8 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
 	void OnHitPointsChanged(const float HitPoints);
 	virtual void OnHitPointsChanged_Implementation(const float HitPoints){}
+
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+	void BuildGhost(TArray<UStaticMesh*>& Meshes, TArray<FTransform>& Transforms) const;
+	virtual void BuildGhost_Implementation(TArray<UStaticMesh*>& Meshes, TArray<FTransform>& Transforms) const;
 };
