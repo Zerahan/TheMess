@@ -72,6 +72,8 @@ void ABuilding_Ghost::Tick(float DeltaTime)
 
 }
 
+bool ABuilding_Ghost::CanPlaceGhost_Implementation() const { return true; }
+
 void ABuilding_Ghost::OnPlaceGhost_Implementation()
 {
 	if (BuildingClassRef) {

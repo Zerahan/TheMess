@@ -13,7 +13,7 @@ class EXPERIMENT_AITEST_API ABuilding_Ghost : public AActor
 {
 	GENERATED_BODY()
 
-	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(BlueprintReadWrite, EditInstanceOnly, meta = (AllowPrivateAccess = "true", ExposeOnSpawn = "true"))
 	TSubclassOf<ABuilding_Basic> BuildingClassRef;
 
 	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, meta = (AllowPrivateAccess = "true"))
@@ -34,6 +34,10 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+	bool CanPlaceGhost() const;
+	virtual bool CanPlaceGhost_Implementation() const;
 
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
 	void OnPlaceGhost();

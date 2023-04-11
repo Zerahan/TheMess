@@ -32,7 +32,8 @@ class EXPERIMENT_AITEST_API UBuildingDataAsset : public UPrimaryDataAsset
 	
 public:
 	UBuildingDataAsset()
-		:DisplayName(FText::FromString("Undefined"))
+		: DisplayName(FText::FromString("Undefined"))
+		, TileSnapSize(2)
 	{}
 
 	/** Type of this item, set in native parent class */
@@ -56,6 +57,9 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	TMap<EWorkType, FWorkData> GetWorkInfo() const { return WorkInfo; }
+
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
+	int32 TileSnapSize;
 
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
 	TSubclassOf<class ABuilding_Basic> SpawnedBuildingClass;
