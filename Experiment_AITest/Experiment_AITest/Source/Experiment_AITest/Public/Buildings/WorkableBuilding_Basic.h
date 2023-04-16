@@ -47,6 +47,8 @@ public:
 	virtual void OnHitPointsChanged_Implementation(const float HitPoints) override;
 	
 	virtual float GetWorkTime_Implementation(const EWorkType WorkType) const override;
+
+	virtual bool GetWorkLocation_Implementation(const EWorkType WorkType, AActor*& WorkTarget, FVector& WorkLocation) const override;
 	
 	UFUNCTION(BlueprintCallable)
 	UBuildingDataAsset* GetStaticData() const;

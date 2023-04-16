@@ -59,6 +59,11 @@ void AWorkableBuilding_Basic::OnHitPointsChanged_Implementation(const float HitP
 
 float AWorkableBuilding_Basic::GetWorkTime_Implementation(const EWorkType WorkType) const { return 1.f; }
 
+bool AWorkableBuilding_Basic::GetWorkLocation_Implementation(const EWorkType WorkType, AActor*& WorkTarget, FVector& WorkLocation) const
+{
+    return false;
+}
+
 UBuildingDataAsset* AWorkableBuilding_Basic::GetStaticData() const { return StaticData;}//.GetDefaultObject(); }
 
 uint8 AWorkableBuilding_Basic::GetStateID() const { return StateID; }

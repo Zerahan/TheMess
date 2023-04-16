@@ -11,7 +11,7 @@ ABuilding_Ghost::ABuilding_Ghost()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	//RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("Default Root Object"));
+	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("Default Root Component"));
 	
 	if (BuildingClassRef) {
 		ABuilding_Basic* Building = BuildingClassRef->GetDefaultObject<ABuilding_Basic>();
@@ -28,6 +28,7 @@ ABuilding_Ghost::ABuilding_Ghost()
 						NewMesh->SetMaterial(0, GhostMaterial->GetDefaultMaterial(EMaterialDomain::MD_Surface));
 					}
 					NewMesh->SetupAttachment(RootComponent);
+					StaticMeshes.Add(NewMesh);
 				}
 			}
 		}
@@ -52,6 +53,8 @@ ABuilding_Ghost::ABuilding_Ghost(TSubclassOf<ABuilding_Basic> BuildingClass)
 					if (GhostMaterial) {
 						NewMesh->SetMaterial(0, GhostMaterial->GetDefaultMaterial(EMaterialDomain::MD_Surface));
 					}
+					NewMesh->SetupAttachment(RootComponent);
+					StaticMeshes.Add(NewMesh);
 				}
 			}
 		}
@@ -61,8 +64,32 @@ ABuilding_Ghost::ABuilding_Ghost(TSubclassOf<ABuilding_Basic> BuildingClass)
 // Called when the game starts or when spawned
 void ABuilding_Ghost::BeginPlay()
 {
+	if (BuildingClassRef && StaticMeshes.Num() == 0) {
+		ABuilding_Basic* Building = BuildingClassRef->GetDefaultObject<ABuilding_Basic>();
+		TArray<UStaticMesh*> Meshes;
+		TArray<FTransform> Transforms;
+		Building->BuildGhost(Meshes, Transforms);
+		//GEngine->AddOnScreenDebugMessage(-1, 10, FColor::Red, FString::Printf(TEXT("Mesh count: %i"), Meshes.Num()));
+		for (int32 i = 0; i < Meshes.Num(); i++) {
+			if (Transforms.IsValidIndex(i)) {
+				UStaticMeshComponent* NewMesh = NewObject<UStaticMeshComponent>(this, TEXT("Mesh" + i));
+				if (NewMesh) {
+					NewMesh->RegisterComponent();
+					NewMesh->SetRelativeTransform(Transforms[i]);
+					NewMesh->SetStaticMesh(Meshes[i]);
+					if (GhostMaterial) {
+						NewMesh->SetMaterial(0, GhostMaterial->GetDefaultMaterial(EMaterialDomain::MD_Surface));
+					}
+					NewMesh->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
+					NewMesh->SetCollisionProfileName(UCollisionProfile::NoCollision_ProfileName);
+					NewMesh->SetMaterial(0, GhostMaterial.Get());
+					//NewMesh->SetupAttachment(RootComponent);
+					StaticMeshes.Add(NewMesh);
+				}
+			}
+		}
+	}
 	Super::BeginPlay();
-	
 }
 
 // Called every frame

@@ -50,4 +50,14 @@ public:
 	*/
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
 	float GetWorkTime(const EWorkType WorkType) const;
+
+	/*
+	* Get the target actor and/or target location the pawn needs to move to to perform this work.
+	* @param WorkType		The type of work being done
+	* @param WorkTarget		The actor that should be targeted for this work
+	* @param WorkLocation	The location that should be targeted for this work
+	* @return				Was this request successfull?
+	*/
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+	bool GetWorkLocation(const EWorkType WorkType, AActor*& WorkTarget, FVector& WorkLocation) const;
 };

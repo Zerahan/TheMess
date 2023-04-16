@@ -4,22 +4,26 @@
 #include "Buildings/Building_Basic.h"
 #include "Components/UnitStatusComponent.h"
 #include "Components/HierarchicalInstancedStaticMeshComponent.h"
+#include "Engine/SCS_Node.h"
 
 // Sets default values
 ABuilding_Basic::ABuilding_Basic()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+
+	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("Default Root Component"));
+
 	StatusComponent = CreateDefaultSubobject<UUnitStatusComponent>(TEXT("Status Component"));
 }
 
 // Called when the game starts or when spawned
 void ABuilding_Basic::BeginPlay()
 {
-	Super::BeginPlay();
 	if (IsValid(GetStatusComponent())) {
 		GetStatusComponent()->OnHealthChanged.AddDynamic(this, &ABuilding_Basic::OnHitPointsChanged);
 	}
+	Super::BeginPlay();
 }
 
 // Called every frame
@@ -41,14 +45,31 @@ float ABuilding_Basic::TakeDamage(float DamageAmount, FDamageEvent const& Damage
 }
 
 void ABuilding_Basic::BuildGhost_Implementation(TArray<UStaticMesh*>& Meshes, TArray<FTransform>& Transforms) const {
-	TInlineComponentArray<UStaticMeshComponent*> StaticMeshes;
-	GetComponents<UStaticMeshComponent>(StaticMeshes);
+	TArray<UObject*> SubObjects;
+	UBlueprintGeneratedClass* BPClass = Cast<UBlueprintGeneratedClass>(GetClass());
+	const TArray<USCS_Node*>& Nodes = BPClass->SimpleConstructionScript->GetAllNodes();
 
-	for (auto Component : StaticMeshes) {
-		if(Component->GetStaticMesh()){
+	//GEngine->AddOnScreenDebugMessage(-1, 10, FColor::Red, FString::Printf(TEXT("Num Meshes: %i"), Nodes.Num()));
+
+	for (USCS_Node* Node : Nodes) {
+		if (Node->ComponentClass->IsChildOf<UStaticMeshComponent>()) {
+			UStaticMeshComponent* Component = Cast<UStaticMeshComponent>(Node->ComponentTemplate);
+			if (Component) {
+				if (Component->GetStaticMesh()) {
+					Meshes.Add(Component->GetStaticMesh());
+					Transforms.Add(Component->GetRelativeTransform());
+				}
+			}
+		}
+	}
+	/*/
+	UStaticMeshComponent* Component = Cast<UStaticMeshComponent>(Sub);
+	if (Component) {
+		if (Component->GetStaticMesh()) {
 			Meshes.Add(Component->GetStaticMesh());
 			Transforms.Add(Component->GetRelativeTransform());
 		}
 	}
+	//*/
 }
 
