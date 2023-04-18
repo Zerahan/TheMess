@@ -7,11 +7,15 @@
 #include "Building_Ghost.generated.h"
 
 class ABuilding_Basic;
+class UBoxComponent;
 
 UCLASS(Blueprintable, BlueprintType, Abstract)
 class EXPERIMENT_AITEST_API ABuilding_Ghost : public AActor
 {
 	GENERATED_BODY()
+
+	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, meta = (AllowPrivateAccess = "true"))
+	UBoxComponent* CollisionBox;
 
 	UPROPERTY(BlueprintReadWrite, EditInstanceOnly, meta = (AllowPrivateAccess = "true", ExposeOnSpawn = "true"))
 	TSubclassOf<ABuilding_Basic> BuildingClassRef;
@@ -22,7 +26,7 @@ class EXPERIMENT_AITEST_API ABuilding_Ghost : public AActor
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, meta = (AllowPrivateAccess = "true"))
 	TSoftObjectPtr<UMaterial> GhostMaterial;
 	
-public:	
+public:
 	// Sets default values for this actor's properties
 	ABuilding_Ghost();
 	ABuilding_Ghost(TSubclassOf<ABuilding_Basic> BuildingClass);
@@ -40,6 +44,6 @@ public:
 	virtual bool CanPlaceGhost_Implementation() const;
 
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
-	void OnPlaceGhost();
-	virtual void OnPlaceGhost_Implementation();
+	AActor* OnPlaceGhost();
+	virtual AActor* OnPlaceGhost_Implementation();
 };

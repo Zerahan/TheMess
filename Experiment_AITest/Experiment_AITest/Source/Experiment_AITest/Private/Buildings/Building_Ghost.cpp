@@ -3,6 +3,8 @@
 
 #include "Buildings/Building_Ghost.h"
 #include "Buildings/Building_Basic.h"
+#include "Components/BoxComponent.h"
+#include "Buildings/Building_Basic.h"
 
 // Sets default values
 ABuilding_Ghost::ABuilding_Ghost()
@@ -12,6 +14,11 @@ ABuilding_Ghost::ABuilding_Ghost()
 	PrimaryActorTick.bCanEverTick = true;
 
 	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("Default Root Component"));
+	CollisionBox = CreateDefaultSubobject<UBoxComponent>(TEXT("Box Collider"));
+	if (CollisionBox) {
+		CollisionBox->SetupAttachment(RootComponent);
+		CollisionBox->SetCollisionProfileName("OverlapAllDynamic");
+	}
 	
 	if (BuildingClassRef) {
 		ABuilding_Basic* Building = BuildingClassRef->GetDefaultObject<ABuilding_Basic>();
@@ -68,6 +75,16 @@ void ABuilding_Ghost::BeginPlay()
 		ABuilding_Basic* Building = BuildingClassRef->GetDefaultObject<ABuilding_Basic>();
 		TArray<UStaticMesh*> Meshes;
 		TArray<FTransform> Transforms;
+		if(!Building) return;
+		FVector Origin;
+		FVector Extents;
+		Building->GetActorBounds(false, Origin, Extents, true);
+		CollisionBox->SetRelativeLocation(Origin);
+		FVector Reduction;
+		Reduction.X = (Extents.X > 1 ? 1 : 0);
+		Reduction.Y = (Extents.Y > 1 ? 1 : 0);
+		Reduction.Z = (Extents.Z > 1 ? 1 : 0);
+		CollisionBox->SetBoxExtent(Extents - Reduction);
 		Building->BuildGhost(Meshes, Transforms);
 		//GEngine->AddOnScreenDebugMessage(-1, 10, FColor::Red, FString::Printf(TEXT("Mesh count: %i"), Meshes.Num()));
 		for (int32 i = 0; i < Meshes.Num(); i++) {
@@ -99,9 +116,14 @@ void ABuilding_Ghost::Tick(float DeltaTime)
 
 }
 
-bool ABuilding_Ghost::CanPlaceGhost_Implementation() const { return true; }
+bool ABuilding_Ghost::CanPlaceGhost_Implementation() const
+{
+	TArray<AActor*> OverlappingActors;
+	GetOverlappingActors(OverlappingActors, ABuilding_Basic::StaticClass());
+	return OverlappingActors.Num() == 0;
+}
 
-void ABuilding_Ghost::OnPlaceGhost_Implementation()
+AActor* ABuilding_Ghost::OnPlaceGhost_Implementation()
 {
 	if (BuildingClassRef) {
 		FActorSpawnParameters SpawnParameters;
@@ -110,6 +132,8 @@ void ABuilding_Ghost::OnPlaceGhost_Implementation()
 		if (BuildingRef) {
 			Destroy();
 		}
+		return BuildingRef;
 	}
+	return nullptr;
 }
 

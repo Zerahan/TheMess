@@ -67,6 +67,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void UpdateWorkTypeAvailability(EWorkType WorkType, bool NewAvailability);
 
+	UFUNCTION(BlueprintCallable)
+	int32 GetAssignedWorkerCount() const;
+
 	/*
 	*	Try to assign a worker to this building.
 	*	@param NewWorker	The worker to assign

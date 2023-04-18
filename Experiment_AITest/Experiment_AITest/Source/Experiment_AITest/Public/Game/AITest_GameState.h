@@ -4,43 +4,43 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameState.h"
+#include "Interfaces/FactionInterface.h"
 #include "AITest_GameState.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FUpdateFoodCount, int32, Count);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FUpdatePopulationCount, int32, Count);
+class UFactionHandlerComponent;
 
 /**
  * 
  */
 UCLASS(Blueprintable, BlueprintType, Abstract)
-class EXPERIMENT_AITEST_API AAITest_GameState : public AGameState
+class EXPERIMENT_AITEST_API AAITest_GameState : public AGameState , public IFactionInterface
 {
 	GENERATED_BODY()
+	
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, meta = (AllowPrivateAccess = "true"))
+	uint8 FactionCount;
+	
+	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, meta = (AllowPrivateAccess = "true"))
+	TArray<UFactionHandlerComponent*> FactionHandlers;
 
-	UPROPERTY()
-	int32 FoodCount;
+	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, meta = (AllowPrivateAccess = "true"))
+	TMap<AController*, EFaction> ControllerFactionAssignments;
 
-	UPROPERTY()
-	int32 PopulationCount;
+protected:
+	// Called when the game starts
+	virtual void BeginPlay() override;
 	
 public:
 	AAITest_GameState();
-
-	UFUNCTION(BlueprintCallable)
-	int32 GetFoodCount() const;
-
-	UFUNCTION(BlueprintCallable)
-	int32 GetPopulationCount() const;
-
-	UFUNCTION(BlueprintCallable)
-	int32 SetFoodCount(int32 NewValue, bool ModifyValue = true);
-
-	UFUNCTION(BlueprintCallable)
-	int32 SetPopulationCount(int32 NewValue, bool ModifyValue = true);
-
-	UPROPERTY(BlueprintAssignable)
-	FUpdateFoodCount UpdateFoodCount;
-
-	UPROPERTY(BlueprintAssignable)
-	FUpdatePopulationCount UpdatePopulationCount;
+	
+	//IFactionInterface
+	virtual void OnConstructedBuilding_Implementation(EFaction Faction, AActor* BuildingRef) const;
+	virtual void OnDestroyedBuilding_Implementation(EFaction Faction, AActor* BuildingRef) const;
+	virtual void OnAddedUnit_Implementation(EFaction Faction, AActor* UnitRef) const;
+	virtual void OnRemovedUnit_Implementation(EFaction Faction, AActor* UnitRef) const;
+	
+	virtual void AssignControllerToFaction_Implementation(AController* Controller, EFaction Faction);
+	virtual void UnassignController_Implementation(AController* Controller);
+	virtual UFactionHandlerComponent* GetFactionHandler_Implementation(EFaction Faction) const;
+	virtual UFactionHandlerComponent* GetFactionHandlerFromController_Implementation(AController* Controller) const;
 };
