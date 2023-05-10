@@ -5,8 +5,8 @@
 #include "Kismet/GameplayStatics.h"
 #include "Buildings/WorkableBuilding_Basic.h"
 
-AWorkerCharacter_Basic::AWorkerCharacter_Basic()
-	: Super()
+AWorkerCharacter_Basic::AWorkerCharacter_Basic(const FObjectInitializer& ObjectInitializer)
+	: Super(ObjectInitializer)
 {
 	//StorageComponent = CreateDefaultSubobject<UStorageComponent>(TEXT("StorageComponent"));
 }

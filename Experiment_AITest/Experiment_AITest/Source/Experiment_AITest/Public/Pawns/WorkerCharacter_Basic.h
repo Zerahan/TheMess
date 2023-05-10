@@ -34,7 +34,7 @@ class EXPERIMENT_AITEST_API AWorkerCharacter_Basic : public AAICharacter_Basic//
 	TArray<TSubclassOf<AWorkableBuilding_Basic>> ValidHouseClasses;
 
 public:
-	AWorkerCharacter_Basic();
+	AWorkerCharacter_Basic(const class FObjectInitializer& ObjectInitializer);
 
 	UFUNCTION(BlueprintCallable)
 	bool SetupAssignments();

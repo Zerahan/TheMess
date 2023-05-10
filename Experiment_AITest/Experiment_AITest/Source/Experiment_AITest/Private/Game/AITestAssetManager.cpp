@@ -3,12 +3,14 @@
 
 #include "Game/AITestAssetManager.h"
 #include "Data/BuildingDataAsset.h"
+#include "AbilitySystemGlobals.h"
 
 const FPrimaryAssetType UAITestAssetManager::BuildingType = TEXT("Building");
 
 void UAITestAssetManager::StartInitialLoading()
 {
     Super::StartInitialLoading();
+	UAbilitySystemGlobals::Get().InitGlobalData();
 }
 
 UAITestAssetManager& UAITestAssetManager::Get()
