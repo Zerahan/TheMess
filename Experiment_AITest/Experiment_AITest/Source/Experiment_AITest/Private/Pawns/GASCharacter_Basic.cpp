@@ -2,6 +2,7 @@
 
 
 #include "Pawns/GASCharacter_Basic.h"
+#include "GAS/AbilitySystemComponent_Basic.h"
 
 // Sets default values
 AGASCharacter_Basic::AGASCharacter_Basic()
