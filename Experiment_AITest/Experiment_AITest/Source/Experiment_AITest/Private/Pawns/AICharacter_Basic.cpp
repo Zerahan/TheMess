@@ -16,10 +16,33 @@ AAICharacter_Basic::AAICharacter_Basic(const FObjectInitializer& ObjectInitializ
 	GetCapsuleComponent()->SetCollisionResponseToChannel(ECollisionChannel::ECC_Visibility, ECollisionResponse::ECR_Overlap);
 
 	bAlwaysRelevant = true;
+	SubunitCount	= 1;
 
 	DeadTag = FGameplayTag::RequestGameplayTag(FName("State.Dead"));
 	EffectRemoveOnDeathTag = FGameplayTag::RequestGameplayTag(FName("State.RemoveOnDeath"));
 
+}
+
+uint8 AAICharacter_Basic::GetSubunitCount() const
+{
+	return SubunitCount;
+}
+
+void AAICharacter_Basic::SetSubunitCount(uint8 NewCount, bool OverwriteCount)
+{
+	SubunitCount = (OverwriteCount ? 0 : SubunitCount) + NewCount;
+}
+
+bool AAICharacter_Basic::TryMergeUnit(AAICharacter_Basic* OtherUnit)
+{
+	if(!IsValid(OtherUnit)) return true;
+	bool HasMerged = false;
+	if (OtherUnit->GetSubunitCount() > 0) {
+		SubunitCount += OtherUnit->GetSubunitCount();
+		//Destroy(OtherUnit);
+		HasMerged = true;
+	}
+	return HasMerged;
 }
 
 float AAICharacter_Basic::GetHealth() const

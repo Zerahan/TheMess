@@ -21,12 +21,24 @@ class EXPERIMENT_AITEST_API AAICharacter_Basic : public ACharacter, public IAbil
 	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, meta = (AllowPrivateAccess = "true"))
 	UUnitStatusComponent* StatusComponent;
 
+	UPROPERTY(BlueprintReadWrite, EditInstanceOnly, meta = (AllowPrivateAccess="true"))
+	uint8 SubunitCount;
+
 public:
 	// Sets default values for this character's properties
 	AAICharacter_Basic(const class FObjectInitializer& ObjectInitializer);
 
 	UPROPERTY(BlueprintAssignable)
 	FOnCharacterDiedDelegate OnCharacterDied;
+
+	UFUNCTION(BlueprintCallable)
+	uint8 GetSubunitCount() const;
+
+	UFUNCTION(BlueprintCallable)
+	void SetSubunitCount(uint8 NewCount, bool OverwriteCount = false);
+
+	UFUNCTION(BlueprintCallable)
+	bool TryMergeUnit(AAICharacter_Basic* OtherUnit);
 
 	UFUNCTION(BlueprintCallable)
 	virtual bool IsAlive() const;

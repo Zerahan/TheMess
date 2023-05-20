@@ -6,7 +6,7 @@
 #include "GameFramework/Character.h"
 #include "GASCharacter_Basic.generated.h"
 
-UCLASS()
+UCLASS(BlueprintType, Blueprintable, Abstract)
 class EXPERIMENT_AITEST_API AGASCharacter_Basic : public ACharacter
 {
 	GENERATED_BODY()
